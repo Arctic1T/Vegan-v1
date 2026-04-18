@@ -1,0 +1,656 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--pk1:#f472b6;--pk2:#ec4899;--pk3:#db2777;--pk4:#be185d;
+--lv1:#e879f9;--lv2:#d946ef;--lv3:#c026d3;
+--rs1:#fb7185;--rs2:#f43f5e;--rs3:#e11d48;
+--mg1:#c084fc;--mg2:#a855f7;--mg3:#9333ea;
+--bg:#fff5f9;--card:#ffffff;--border:#fce7f3;
+--text:#3b0764;--muted:#9d174d;--soft:#fdf2f8;
+--accent:#fbbf24;
+}
+body{background:var(--bg);font-family:system-ui,sans-serif;color:var(--text)}
+#app{max-width:920px;margin:0 auto;padding-bottom:3rem}
+
+.header{background:#be185d;padding:1.75rem 1.5rem 1.25rem;text-align:center}
+.logo h1{font-size:2.8rem;font-weight:800;color:#fff;letter-spacing:-1px}
+.logo h1 span{color:#fbcfe8}
+.logo p{color:#fbcfe8;font-size:.9rem;margin-top:3px}
+.search-row{display:flex;gap:8px;max-width:520px;margin:1rem auto 0}
+.search-row input{flex:1;padding:.7rem 1.1rem;border-radius:50px;border:none;font-size:.95rem;background:#fff;color:var(--text);outline:none}
+.search-row input:focus{outline:2px solid #f9a8d4}
+.search-row button{padding:.7rem 1.3rem;border-radius:50px;border:none;background:#f472b6;color:#fff;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.search-row button:hover{background:#ec4899}
+.search-row button:active{transform:scale(.97)}
+
+.tabs-wrap{background:#fff;border-bottom:1.5px solid var(--border);padding:0 1rem}
+.tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:.8rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--muted);white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--pk2)}
+.tab.active{border-bottom-color:var(--pk2);color:var(--pk2)}
+
+.sub-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:.75rem 1rem .25rem;background:var(--soft)}
+.stab{padding:5px 14px;border-radius:50px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.stab:hover{border-color:var(--pk1);color:var(--pk2)}
+.stab.active{background:var(--pk2);border-color:var(--pk2);color:#fff}
+
+.results-bar{padding:.6rem 1rem;font-size:.8rem;color:var(--muted);background:var(--soft)}
+.results-bar strong{color:var(--text)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:1rem}
+.rcard{background:var(--card);border-radius:16px;border:1.5px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s}
+.rcard:hover{transform:translateY(-3px);border-color:var(--pk1)}
+.rcard-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.rcard-body{padding:10px 13px 13px}
+.rcard-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.rcard-sub{font-size:.72rem;color:var(--muted);margin-bottom:7px}
+.macros{display:flex;gap:5px;flex-wrap:wrap}
+.mc{font-size:.68rem;padding:3px 7px;border-radius:6px;font-weight:600}
+.mc.k{background:#fce7f3;color:#9d174d}
+.mc.p{background:#f3e8ff;color:#6b21a8}
+.mc.c{background:#fdf4ff;color:#86198f}
+.mc.f{background:#fff1f2;color:#9f1239}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.empty .big{font-size:3rem;margin-bottom:.5rem}
+
+.dview{display:none;padding:0 1rem}
+.dview.open{display:block}
+.back{background:none;border:1.5px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:50px;cursor:pointer;font-size:.82rem;margin-bottom:.75rem;display:inline-flex;align-items:center;gap:5px}
+.back:hover{border-color:var(--pk1);color:var(--pk2)}
+.dcard{background:var(--card);border-radius:20px;border:1.5px solid var(--border);overflow:hidden}
+.dhero{padding:1.75rem 1.5rem;text-align:center;background:var(--soft)}
+.dhero .dem{font-size:4rem}
+.dhero h2{font-size:1.4rem;font-weight:800;color:var(--text);margin:.4rem 0 .2rem}
+.dtag{font-size:.78rem;color:var(--muted);background:#fff;padding:4px 12px;border-radius:50px;display:inline-block}
+.mbar{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--border)}
+.mcell{padding:.8rem .4rem;text-align:center;border-right:1.5px solid var(--border)}
+.mcell:last-child{border-right:none}
+.mcell .v{font-size:1.2rem;font-weight:800;color:var(--pk3)}
+.mcell .l{font-size:.62rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.dbody{padding:1.1rem 1.4rem}
+.stitle{font-size:.72rem;font-weight:700;color:var(--pk3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;padding-bottom:5px;border-bottom:2px solid var(--border)}
+.itable{width:100%;border-collapse:collapse;margin-bottom:1.1rem;font-size:.82rem;table-layout:fixed}
+.itable th{text-align:left;padding:5px 6px;color:var(--muted);font-weight:600;font-size:.7rem;border-bottom:1.5px solid var(--border)}
+.itable td{padding:6px 6px;border-bottom:1px solid var(--soft)}
+.itable tr:last-child td{border-bottom:none}
+.slist{list-style:none}
+.slist li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--soft);font-size:.85rem;line-height:1.5}
+.slist li:last-child{border-bottom:none}
+.snum{min-width:24px;height:24px;border-radius:50%;background:var(--pk2);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+</style>
+
+<h2 class="sr-only">ReFresh — vegan recipe app with ingredient and dish-type categories, search, and full nutrition info</h2>
+
+<div id="app">
+<div class="header">
+  <div class="logo">
+    <h1>Re<span>Fresh</span></h1>
+    <p>100% plant-based · 200+ recipes · zero compromise</p>
+  </div>
+  <div class="search-row">
+    <input id="srch" type="text" placeholder="Search ingredient or dish (e.g. eggplant, curry, mango)..." />
+    <button onclick="doSearch()">Search</button>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="mainTabs"></div>
+</div>
+<div class="sub-tabs" id="subTabs"></div>
+<div class="results-bar" id="rbar"></div>
+
+<div id="listView">
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none"><div class="big">🌸</div><p>No recipes found — try a different search!</p></div>
+</div>
+
+<div class="dview" id="dview">
+  <button class="back" onclick="closeD()">← Back</button>
+  <div class="dcard" id="dcard"></div>
+</div>
+</div>
+
+<script>
+const bgColors={
+  eggplant:'#f3e8ff',tomato:'#fff1f2',mushroom:'#fdf4ff',chickpea:'#fef9c3',
+  lentil:'#fce7f3',avocado:'#f0fdf4',tofu:'#fdf2f8',spinach:'#f0fdf4',
+  potato:'#fffbeb',banana:'#fefce8',zucchini:'#f0fdf4',cauliflower:'#fdf4ff',
+  curry:'#fef9c3',soup:'#fff1f2',salad:'#f0fdf4',bowl:'#fdf2f8',
+  pasta:'#fffbeb',stir_fry:'#fdf4ff',taco:'#fff7ed',dessert:'#fce7f3',
+  breakfast:'#fef9c3',smoothie:'#f0fdf4'
+};
+
+const RECIPES=[
+{id:1,name:'Baba Ganoush',emoji:'🍆',ingCat:'eggplant',dishCat:'dip',tag:'Middle Eastern',diff:'easy',cal:180,pro:5,carb:18,fat:10,time:'30 min',
+ing:[{n:'Eggplant',a:'2 large',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Tahini',a:'3 tbsp',cal:170,pro:5,carb:6,fat:15},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Lemon juice',a:'2 tbsp',cal:8,pro:0.1,carb:2.6,fat:0},{n:'Olive oil',a:'2 tbsp',cal:239,pro:0,carb:0,fat:27}],
+steps:['Roast eggplants over open flame or at 425°F until charred and soft, about 25 min.','Cool, peel skin, drain excess liquid.','Blend with tahini, garlic, lemon juice, salt.','Drizzle olive oil and top with paprika.']},
+
+{id:2,name:'Eggplant Curry',emoji:'🍛',ingCat:'eggplant',dishCat:'curry',tag:'Indian',diff:'medium',cal:310,pro:9,carb:38,fat:14,time:'40 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Coconut milk',a:'1 cup',cal:445,pro:4.6,carb:6,fat:48},{n:'Tomatoes',a:'2',cal:36,pro:1.8,carb:7.8,fat:0.4},{n:'Garam masala',a:'2 tsp',cal:14,pro:0.5,carb:3,fat:0.5}],
+steps:['Sauté onion until golden. Add spices and cook 2 min.','Add eggplant chunks; cook 5 min.','Pour in tomatoes and coconut milk; simmer 15 min.','Stir in chickpeas and cook 8 more min.']},
+
+{id:3,name:'Stuffed Eggplant',emoji:'🍆',ingCat:'eggplant',dishCat:'roasted',tag:'Mediterranean',diff:'medium',cal:285,pro:10,carb:32,fat:13,time:'50 min',
+ing:[{n:'Eggplant',a:'2 medium',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Quinoa',a:'½ cup',cal:160,pro:6,carb:29,fat:2.5},{n:'Cherry tomatoes',a:'1 cup',cal:26,pro:1.3,carb:5.8,fat:0.2},{n:'Spinach',a:'2 cups',cal:14,pro:1.8,carb:2.2,fat:0.2},{n:'Pine nuts',a:'2 tbsp',cal:114,pro:2.4,carb:2.2,fat:11}],
+steps:['Halve eggplants, score flesh, brush oil, roast 400°F 25 min.','Cook quinoa. Sauté tomatoes and spinach.','Mix quinoa filling with diced eggplant flesh.','Fill shells and return to oven 10 min.']},
+
+{id:4,name:'Eggplant Parmesan (vegan)',emoji:'🍆',ingCat:'eggplant',dishCat:'baked',tag:'Italian',diff:'medium',cal:340,pro:12,carb:42,fat:14,time:'55 min',
+ing:[{n:'Eggplant',a:'2 large',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Marinara sauce',a:'2 cups',cal:140,pro:4,carb:20,fat:5},{n:'Breadcrumbs',a:'1 cup',cal:460,pro:16,carb:86,fat:6},{n:'Vegan mozzarella',a:'1 cup',cal:320,pro:14,carb:10,fat:26},{n:'Nutritional yeast',a:'3 tbsp',cal:45,pro:6,carb:5,fat:0.8}],
+steps:['Slice eggplant ½-inch thick. Bread slices and bake at 425°F until crispy.','Layer marinara, eggplant slices, vegan mozzarella in baking dish.','Repeat layers. Top with breadcrumbs and nutritional yeast.','Bake 25 min until bubbly and golden.']},
+
+{id:5,name:'Eggplant Stir-Fry',emoji:'🥢',ingCat:'eggplant',dishCat:'stir_fry',tag:'Chinese',diff:'easy',cal:230,pro:7,carb:22,fat:13,time:'20 min',
+ing:[{n:'Eggplant',a:'2 medium',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Soy sauce',a:'3 tbsp',cal:24,pro:3.6,carb:2.4,fat:0.3},{n:'Garlic',a:'4 cloves',cal:18,pro:0.8,carb:4,fat:0.1},{n:'Ginger',a:'1 tbsp',cal:5,pro:0.1,carb:1.1,fat:0},{n:'Sesame oil',a:'2 tsp',cal:80,pro:0,carb:0,fat:9}],
+steps:['Cube eggplant, salt and let drain 10 min.','Stir-fry on high in sesame oil until golden.','Add garlic and ginger; toss 1 min.','Pour in soy sauce with a splash of water; toss and serve over rice.']},
+
+{id:6,name:'Eggplant Shakshuka',emoji:'🍳',ingCat:'eggplant',dishCat:'skillet',tag:'Middle Eastern',diff:'easy',cal:275,pro:9,carb:28,fat:14,time:'30 min',
+ing:[{n:'Eggplant',a:'1 medium',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Crushed tomatoes',a:'1 can',cal:70,pro:3,carb:14,fat:0.5},{n:'Silken tofu',a:'200g',cal:124,pro:13,carb:3,fat:5},{n:'Paprika & cumin',a:'1 tsp each',cal:10,pro:0.4,carb:2,fat:0.4},{n:'Fresh herbs',a:'¼ cup',cal:3,pro:0.3,carb:0.5,fat:0}],
+steps:['Sauté diced eggplant in olive oil until golden.','Add spices then crushed tomatoes; simmer 10 min.','Make wells in sauce and nestle spoonfuls of silken tofu.','Cover and cook 5 min. Garnish with herbs.']},
+
+{id:7,name:'Eggplant Soup',emoji:'🥣',ingCat:'eggplant',dishCat:'soup',tag:'Turkish',diff:'easy',cal:190,pro:6,carb:22,fat:9,time:'35 min',
+ing:[{n:'Eggplant',a:'2 large',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Vegetable broth',a:'4 cups',cal:32,pro:1.6,carb:6.4,fat:0},{n:'Onion',a:'1',cal:64,pro:1.7,carb:15,fat:0.1},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Lemon juice',a:'2 tbsp',cal:8,pro:0.1,carb:2.6,fat:0}],
+steps:['Roast eggplant until very soft.','Sauté onion and garlic until caramelized.','Blend eggplant, onion, garlic with broth until smooth.','Season with lemon juice, salt and serve topped with olive oil.']},
+
+{id:8,name:'Eggplant Tacos',emoji:'🌮',ingCat:'eggplant',dishCat:'taco',tag:'Fusion',diff:'easy',cal:295,pro:8,carb:40,fat:12,time:'25 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Corn tortillas',a:'4',cal:200,pro:4,carb:44,fat:2},{n:'Black beans',a:'½ can',cal:170,pro:11,carb:30,fat:0.7},{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5},{n:'Chipotle sauce',a:'2 tbsp',cal:30,pro:0.5,carb:4,fat:1.5}],
+steps:['Dice eggplant, season with chipotle and cumin, roast 400°F 20 min.','Warm tortillas on dry pan.','Layer eggplant, black beans, mashed avocado.','Drizzle chipotle sauce and top with lime slaw.']},
+
+{id:9,name:'Ratatouille',emoji:'🍆',ingCat:'eggplant',dishCat:'stew',tag:'French',diff:'medium',cal:210,pro:5,carb:26,fat:10,time:'60 min',
+ing:[{n:'Eggplant',a:'1',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Zucchini',a:'2',cal:66,pro:4.8,carb:14,fat:1.2},{n:'Tomatoes',a:'4',cal:72,pro:3.6,carb:15.6,fat:0.8},{n:'Bell pepper',a:'1',cal:31,pro:1,carb:6,fat:0.3},{n:'Olive oil',a:'3 tbsp',cal:358,pro:0,carb:0,fat:40}],
+steps:['Thinly slice all vegetables into rounds.','Spread tomato sauce in a baking dish.','Arrange sliced vegetables overlapping in concentric circles.','Drizzle oil, cover with foil and bake at 375°F for 45 min.']},
+
+{id:10,name:'Eggplant Gyros',emoji:'🥙',ingCat:'eggplant',dishCat:'wrap',tag:'Greek',diff:'medium',cal:360,pro:10,carb:46,fat:16,time:'35 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Pita bread',a:'2',cal:340,pro:12,carb:64,fat:2},{n:'Tzatziki (vegan)',a:'¼ cup',cal:60,pro:2,carb:4,fat:4},{n:'Tomato',a:'1',cal:22,pro:1.1,carb:4.8,fat:0.2},{n:'Oregano',a:'1 tsp',cal:3,pro:0.1,carb:0.7,fat:0.1}],
+steps:['Slice eggplant, marinate in oregano, olive oil, garlic and lemon.','Grill or roast until charred and tender.','Warm pita bread.','Load with eggplant, tomatoes, red onion and vegan tzatziki.']},
+
+{id:11,name:'Eggplant Lasagna',emoji:'🍝',ingCat:'eggplant',dishCat:'baked',tag:'Italian',diff:'hard',cal:385,pro:16,carb:38,fat:18,time:'75 min',
+ing:[{n:'Eggplant (sliced thin)',a:'2 large',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Lentil bolognese',a:'2 cups',cal:300,pro:18,carb:48,fat:3},{n:'Vegan béchamel',a:'1.5 cups',cal:220,pro:6,carb:20,fat:13},{n:'Lasagna noodles',a:'12',cal:420,pro:15,carb:84,fat:1.5},{n:'Nutritional yeast',a:'4 tbsp',cal:60,pro:8,carb:7,fat:1}],
+steps:['Grill eggplant slices until soft. Cook lasagna noodles.','Make lentil bolognese with onion, lentils, tomatoes and herbs.','Layer: noodles, bolognese, eggplant, béchamel — repeat.','Top with nutritional yeast; bake covered 40 min, uncover 15 min.']},
+
+{id:12,name:'Eggplant Fried Rice',emoji:'🍚',ingCat:'eggplant',dishCat:'rice',tag:'Asian',diff:'easy',cal:340,pro:10,carb:52,fat:11,time:'25 min',
+ing:[{n:'Eggplant',a:'1 medium',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Day-old rice',a:'2 cups',cal:412,pro:8.5,carb:90,fat:0.7},{n:'Soy sauce',a:'3 tbsp',cal:24,pro:3.6,carb:2.4,fat:0.3},{n:'Green onions',a:'3',cal:15,pro:0.5,carb:3.5,fat:0.1},{n:'Sesame oil',a:'1 tbsp',cal:119,pro:0,carb:0,fat:13.6}],
+steps:['Dice eggplant and stir-fry on high heat until golden.','Push to side; add rice and press flat against hot wok.','Season with soy sauce and sesame oil; toss everything together.','Garnish with green onions and sesame seeds.']},
+
+{id:13,name:'Moussaka (vegan)',emoji:'🍆',ingCat:'eggplant',dishCat:'baked',tag:'Greek',diff:'hard',cal:420,pro:15,carb:40,fat:22,time:'90 min',
+ing:[{n:'Eggplant',a:'2 large',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Lentils',a:'1.5 cups',cal:600,pro:42,carb:102,fat:3},{n:'Tomato sauce',a:'2 cups',cal:120,pro:4,carb:22,fat:3},{n:'Béchamel (vegan)',a:'1.5 cups',cal:220,pro:6,carb:20,fat:13},{n:'Cinnamon & allspice',a:'1 tsp each',cal:6,pro:0.1,carb:2,fat:0.1}],
+steps:['Slice and salt eggplant 20 min; rinse and roast until soft.','Make lentil meat sauce with cinnamon and allspice.','Layer eggplant then lentil sauce in deep baking dish.','Pour béchamel on top; bake 45 min at 375°F until golden.']},
+
+{id:14,name:'Eggplant Chips',emoji:'🍟',ingCat:'eggplant',dishCat:'snack',tag:'Crispy',diff:'easy',cal:160,pro:4,carb:18,fat:8,time:'30 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Breadcrumbs',a:'½ cup',cal:230,pro:8,carb:43,fat:3},{n:'Garlic powder',a:'1 tsp',cal:9,pro:0.5,carb:2,fat:0},{n:'Smoked paprika',a:'1 tsp',cal:6,pro:0.3,carb:1.2,fat:0.3},{n:'Olive oil spray',a:'light',cal:20,pro:0,carb:0,fat:2.3}],
+steps:['Slice eggplant paper-thin on a mandoline.','Toss in seasoned breadcrumbs.','Spray with oil and arrange on baking sheet.','Bake at 375°F 25–30 min until crispy.']},
+
+{id:15,name:'Eggplant Flatbread Pizza',emoji:'🍕',ingCat:'eggplant',dishCat:'baked',tag:'Italian',diff:'easy',cal:365,pro:11,carb:48,fat:15,time:'25 min',
+ing:[{n:'Flatbread',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Eggplant',a:'1 small',cal:20,pro:0.5,carb:5,fat:0.1},{n:'Marinara',a:'½ cup',cal:70,pro:2,carb:10,fat:2.5},{n:'Vegan mozzarella',a:'½ cup',cal:160,pro:7,carb:5,fat:13},{n:'Basil',a:'½ cup',cal:3,pro:0.4,carb:0.4,fat:0.1}],
+steps:['Roast thin eggplant slices with oil and garlic.','Spread marinara on flatbread.','Top with eggplant and vegan mozzarella.','Bake at 425°F 12 min; finish with fresh basil.']},
+
+{id:16,name:'Caponata',emoji:'🫙',ingCat:'eggplant',dishCat:'stew',tag:'Sicilian',diff:'medium',cal:195,pro:4,carb:24,fat:10,time:'40 min',
+ing:[{n:'Eggplant',a:'2 medium',cal:66,pro:1.6,carb:16,fat:0.5},{n:'Celery',a:'2 stalks',cal:13,pro:0.6,carb:2.8,fat:0.2},{n:'Green olives',a:'½ cup',cal:75,pro:0.5,carb:2,fat:8},{n:'Capers',a:'2 tbsp',cal:10,pro:0.5,carb:1,fat:0.3},{n:'Red wine vinegar',a:'3 tbsp',cal:9,pro:0,carb:1.2,fat:0}],
+steps:['Cube and fry eggplant until golden; drain on paper towels.','Sauté celery and onion; add tomatoes and simmer 10 min.','Stir in olives, capers, vinegar and sugar for sweet-sour balance.','Add eggplant, cook 5 more min. Serve at room temperature.']},
+
+{id:17,name:'Eggplant Miso Glaze',emoji:'🍆',ingCat:'eggplant',dishCat:'roasted',tag:'Japanese',diff:'easy',cal:215,pro:7,carb:24,fat:10,time:'25 min',
+ing:[{n:'Eggplant',a:'2 Japanese',cal:33,pro:0.8,carb:8,fat:0.2},{n:'White miso',a:'3 tbsp',cal:69,pro:4.2,carb:9,fat:2.1},{n:'Mirin',a:'2 tbsp',cal:48,pro:0.1,carb:11,fat:0},{n:'Sake (or rice vinegar)',a:'1 tbsp',cal:14,pro:0.1,carb:0.5,fat:0},{n:'Sesame seeds',a:'1 tbsp',cal:52,pro:1.6,carb:2.1,fat:4.5}],
+steps:['Halve eggplants and score flesh in crosshatch.','Mix miso, mirin and sake into a glaze.','Spread glaze on cut side of eggplant.','Broil 8–10 min until caramelized and tender. Top with sesame seeds.']},
+
+{id:18,name:'Eggplant & Chickpea Stew',emoji:'🫕',ingCat:'eggplant',dishCat:'stew',tag:'Moroccan',diff:'medium',cal:330,pro:14,carb:46,fat:10,time:'45 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Diced tomatoes',a:'1 can',cal:40,pro:2,carb:8,fat:0.5},{n:'Ras el hanout',a:'2 tsp',cal:12,pro:0.4,carb:2.5,fat:0.4},{n:'Fresh cilantro',a:'¼ cup',cal:1,pro:0.1,carb:0.3,fat:0}],
+steps:['Brown eggplant chunks in oil; set aside.','Sauté onion, add ras el hanout and garlic.','Add tomatoes and chickpeas; simmer 15 min.','Return eggplant; cook 10 min more. Top with cilantro.']},
+
+{id:19,name:'Eggplant Dumplings',emoji:'🥟',ingCat:'eggplant',dishCat:'dumpling',tag:'Asian',diff:'hard',cal:295,pro:9,carb:44,fat:9,time:'60 min',
+ing:[{n:'Dumpling wrappers',a:'24',cal:360,pro:10,carb:72,fat:1.5},{n:'Eggplant (minced)',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Shiitake mushrooms',a:'1 cup',cal:40,pro:2.8,carb:6.8,fat:0.6},{n:'Ginger',a:'2 tsp',cal:4,pro:0.1,carb:0.8,fat:0},{n:'Soy sauce',a:'2 tbsp',cal:16,pro:2.4,carb:1.6,fat:0.2}],
+steps:['Finely mince eggplant and mushrooms; sauté until dry.','Season with ginger, soy sauce, sesame oil and green onion.','Fill dumpling wrappers with 1 tsp filling; fold and seal.','Pan-fry flat side down 3 min, add water, cover and steam 5 min.']},
+
+{id:20,name:'Eggplant Burger',emoji:'🍔',ingCat:'eggplant',dishCat:'burger',tag:'American',diff:'easy',cal:380,pro:10,carb:50,fat:16,time:'25 min',
+ing:[{n:'Eggplant',a:'1 large',cal:33,pro:0.8,carb:8,fat:0.2},{n:'Burger buns (vegan)',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Sriracha mayo (vegan)',a:'2 tbsp',cal:90,pro:0,carb:1,fat:10},{n:'Lettuce & tomato',a:'as needed',cal:15,pro:1,carb:3,fat:0.2},{n:'Smoked paprika',a:'1 tsp',cal:6,pro:0.3,carb:1.2,fat:0.3}],
+steps:['Slice eggplant into thick rounds; marinate in soy sauce and paprika.','Grill or pan-fry each side 4 min until charred.','Spread sriracha mayo on toasted bun.','Layer eggplant steak, lettuce and tomato.']},
+
+{id:21,name:'Classic Hummus',emoji:'🧆',ingCat:'chickpea',dishCat:'dip',tag:'Middle Eastern',diff:'easy',cal:166,pro:8,carb:18,fat:8,time:'10 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Tahini',a:'3 tbsp',cal:170,pro:5,carb:6,fat:15},{n:'Lemon juice',a:'3 tbsp',cal:12,pro:0.2,carb:4,fat:0},{n:'Garlic',a:'2 cloves',cal:9,pro:0.4,carb:2,fat:0},{n:'Olive oil',a:'3 tbsp',cal:358,pro:0,carb:0,fat:40}],
+steps:['Drain chickpeas; reserve aquafaba.','Blend chickpeas, tahini, lemon, garlic with aquafaba until very smooth.','Season with salt and cumin.','Serve drizzled with olive oil and paprika.']},
+
+{id:22,name:'Chickpea Tikka Masala',emoji:'🍲',ingCat:'chickpea',dishCat:'curry',tag:'Indian',diff:'medium',cal:342,pro:15,carb:44,fat:13,time:'35 min',
+ing:[{n:'Chickpeas',a:'2 cans',cal:720,pro:38,carb:120,fat:12},{n:'Crushed tomatoes',a:'1.5 cups',cal:60,pro:3,carb:13,fat:0.5},{n:'Coconut cream',a:'½ cup',cal:222,pro:2.3,carb:3,fat:24},{n:'Tikka spice blend',a:'3 tbsp',cal:30,pro:1,carb:5,fat:1},{n:'Cilantro',a:'¼ cup',cal:1,pro:0.1,carb:0.3,fat:0}],
+steps:['Sauté onion, then add garlic-ginger paste and spice blend.','Add crushed tomatoes; simmer 10 min.','Stir in chickpeas and coconut cream; simmer 10 min.','Garnish with cilantro; serve with rice.']},
+
+{id:23,name:'Crispy Roasted Chickpeas',emoji:'🫘',ingCat:'chickpea',dishCat:'snack',tag:'Snack',diff:'easy',cal:200,pro:10,carb:30,fat:6,time:'35 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Olive oil',a:'1 tbsp',cal:119,pro:0,carb:0,fat:13.6},{n:'Smoked paprika',a:'1 tsp',cal:6,pro:0.3,carb:1.2,fat:0.3},{n:'Cumin',a:'½ tsp',cal:4,pro:0.2,carb:0.9,fat:0.2},{n:'Salt',a:'½ tsp',cal:0,pro:0,carb:0,fat:0}],
+steps:['Rinse and thoroughly dry chickpeas on paper towels.','Toss in oil and spices.','Spread on baking sheet; roast at 400°F 25–35 min, shaking halfway.','Cool to crisp up; store airtight for up to 4 days.']},
+
+{id:24,name:'Chickpea Shawarma Bowl',emoji:'🥙',ingCat:'chickpea',dishCat:'bowl',tag:'Middle Eastern',diff:'easy',cal:398,pro:18,carb:52,fat:15,time:'25 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Brown rice',a:'1 cup cooked',cal:216,pro:5,carb:45,fat:1.8},{n:'Cucumber',a:'1',cal:16,pro:0.7,carb:3.6,fat:0.1},{n:'Tahini dressing',a:'3 tbsp',cal:170,pro:5,carb:6,fat:15},{n:'Shawarma spices',a:'2 tsp',cal:10,pro:0.3,carb:2,fat:0.4}],
+steps:['Toss chickpeas in shawarma spices; roast at 425°F 20 min.','Build bowl: rice, diced cucumber, cherry tomatoes, pickled onion.','Add crispy chickpeas.','Drizzle tahini dressing and fresh lemon.']},
+
+{id:25,name:'Chickpea Soup',emoji:'🥣',ingCat:'chickpea',dishCat:'soup',tag:'Spanish',diff:'easy',cal:270,pro:13,carb:40,fat:6,time:'30 min',
+ing:[{n:'Chickpeas',a:'2 cans',cal:720,pro:38,carb:120,fat:12},{n:'Tomatoes',a:'2',cal:36,pro:1.8,carb:7.8,fat:0.4},{n:'Spinach',a:'2 cups',cal:14,pro:1.8,carb:2.2,fat:0.2},{n:'Smoked paprika',a:'1 tsp',cal:6,pro:0.3,carb:1.2,fat:0.3},{n:'Vegetable broth',a:'4 cups',cal:32,pro:1.6,carb:6.4,fat:0}],
+steps:['Sauté onion and garlic. Add paprika and cook 1 min.','Add tomatoes and broth; simmer 10 min.','Add chickpeas; simmer 10 more min.','Stir in spinach at end; season and serve.']},
+
+{id:26,name:'Chickpea Pancakes',emoji:'🥞',ingCat:'chickpea',dishCat:'breakfast',tag:'Indian-inspired',diff:'easy',cal:245,pro:14,carb:32,fat:6,time:'20 min',
+ing:[{n:'Chickpea flour',a:'1 cup',cal:356,pro:20,carb:53,fat:6},{n:'Water',a:'¾ cup',cal:0,pro:0,carb:0,fat:0},{n:'Green onion',a:'2',cal:10,pro:0.3,carb:2.3,fat:0.1},{n:'Cumin',a:'½ tsp',cal:4,pro:0.2,carb:0.9,fat:0.2},{n:'Turmeric',a:'¼ tsp',cal:2,pro:0,carb:0.4,fat:0}],
+steps:['Whisk chickpea flour with water, turmeric, cumin and salt to a smooth batter.','Fold in sliced green onions.','Cook on non-stick pan over medium heat, 3 min per side.','Serve with chutney or avocado.']},
+
+{id:27,name:'Chickpea Salad Sandwich',emoji:'🥪',ingCat:'chickpea',dishCat:'sandwich',tag:'American',diff:'easy',cal:380,pro:16,carb:48,fat:14,time:'10 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Vegan mayo',a:'3 tbsp',cal:135,pro:0,carb:1.5,fat:15},{n:'Celery',a:'2 stalks',cal:13,pro:0.6,carb:2.8,fat:0.2},{n:'Dill',a:'1 tsp',cal:1,pro:0,carb:0.2,fat:0},{n:'Sourdough bread',a:'2 slices',cal:200,pro:8,carb:38,fat:1}],
+steps:['Mash chickpeas roughly with a fork — leave some texture.','Mix with mayo, celery, dill, mustard and lemon juice.','Season with salt and pepper.','Pile onto sourdough with crisp lettuce leaves.']},
+
+{id:28,name:'Falafel',emoji:'🧆',ingCat:'chickpea',dishCat:'fritter',tag:'Middle Eastern',diff:'medium',cal:330,pro:12,carb:38,fat:14,time:'40 min',
+ing:[{n:'Dried chickpeas (soaked)',a:'1.5 cups',cal:540,pro:28,carb:90,fat:9},{n:'Parsley & cilantro',a:'1 cup each',cal:10,pro:1.2,carb:1.8,fat:0.3},{n:'Garlic',a:'4 cloves',cal:18,pro:0.8,carb:4,fat:0.1},{n:'Cumin & coriander',a:'1 tsp each',cal:12,pro:0.5,carb:2.5,fat:0.5},{n:'Baking powder',a:'1 tsp',cal:2,pro:0,carb:0.6,fat:0}],
+steps:['Process soaked (not cooked) chickpeas with herbs, garlic, spices — keep it coarse.','Add baking powder; rest 30 min in fridge.','Form into balls; fry or bake at 400°F 20 min.','Serve in pita with tahini, pickles and salad.']},
+
+{id:29,name:'Chickpea Stir-Fry',emoji:'🥢',ingCat:'chickpea',dishCat:'stir_fry',tag:'Asian',diff:'easy',cal:310,pro:16,carb:38,fat:11,time:'20 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Broccoli',a:'2 cups',cal:62,pro:5.1,carb:12,fat:0.8},{n:'Bell pepper',a:'1',cal:31,pro:1,carb:6,fat:0.3},{n:'Soy sauce',a:'2 tbsp',cal:16,pro:2.4,carb:1.6,fat:0.2},{n:'Hoisin sauce',a:'1 tbsp',cal:35,pro:0.5,carb:7,fat:0.5}],
+steps:['Stir-fry broccoli and pepper on high heat 3 min.','Add chickpeas; toss and cook 3 min more.','Mix soy sauce, hoisin and a splash of water; pour in.','Toss to coat and serve over steamed rice.']},
+
+{id:30,name:'Chickpea Coconut Curry',emoji:'🥥',ingCat:'chickpea',dishCat:'curry',tag:'Thai',diff:'easy',cal:365,pro:14,carb:42,fat:17,time:'30 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Coconut milk',a:'1 can',cal:445,pro:4.6,carb:6,fat:48},{n:'Red curry paste',a:'2 tbsp',cal:40,pro:0.8,carb:6,fat:2},{n:'Baby spinach',a:'2 cups',cal:14,pro:1.8,carb:2.2,fat:0.2},{n:'Lime',a:'1',cal:11,pro:0.3,carb:3.7,fat:0.1}],
+steps:['Fry curry paste in oil 2 min.','Add coconut milk and bring to a simmer.','Add chickpeas; cook 15 min.','Stir in spinach and lime juice; serve over jasmine rice.']},
+
+{id:31,name:'Chickpea Tacos',emoji:'🌮',ingCat:'chickpea',dishCat:'taco',tag:'Mexican',diff:'easy',cal:345,pro:14,carb:50,fat:10,time:'20 min',
+ing:[{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Corn tortillas',a:'4',cal:200,pro:4,carb:44,fat:2},{n:'Avocado',a:'1',cal:234,pro:3,carb:12,fat:21},{n:'Purple cabbage slaw',a:'1 cup',cal:22,pro:1.2,carb:5.2,fat:0.2},{n:'Lime & cilantro',a:'to taste',cal:5,pro:0.2,carb:1.5,fat:0}],
+steps:['Season chickpeas with taco spices; roast or pan-fry until crispy.','Mash avocado with lime and salt.','Warm tortillas.','Build tacos with chickpeas, avocado mash and slaw.']},
+
+{id:32,name:'Chickpea Pasta',emoji:'🍝',ingCat:'chickpea',dishCat:'pasta',tag:'Italian',diff:'easy',cal:430,pro:20,carb:68,fat:10,time:'25 min',
+ing:[{n:'Pasta',a:'300g',cal:420,pro:15,carb:84,fat:1.8},{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Cherry tomatoes',a:'1.5 cups',cal:39,pro:2,carb:8.6,fat:0.4},{n:'Garlic',a:'4 cloves',cal:18,pro:0.8,carb:4,fat:0.1},{n:'Fresh rosemary',a:'2 sprigs',cal:2,pro:0.1,carb:0.3,fat:0.1}],
+steps:['Cook pasta in salted water until al dente.','Fry garlic and rosemary in olive oil; add chickpeas and tomatoes.','Cook until tomatoes burst; season with salt and chili flakes.','Toss with pasta and pasta water to create a silky sauce.']},
+
+{id:33,name:'Chickpea Buddha Bowl',emoji:'🥗',ingCat:'chickpea',dishCat:'bowl',tag:'Fusion',diff:'easy',cal:465,pro:20,carb:56,fat:18,time:'20 min',
+ing:[{n:'Roasted chickpeas',a:'½ can',cal:180,pro:9.5,carb:30,fat:3},{n:'Quinoa',a:'1 cup cooked',cal:222,pro:8,carb:39,fat:3.5},{n:'Kale',a:'2 cups',cal:33,pro:2.9,carb:6.7,fat:0.5},{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5},{n:'Lemon-tahini dressing',a:'3 tbsp',cal:120,pro:3.5,carb:5,fat:10}],
+steps:['Massage kale with olive oil and lemon until softened.','Roast chickpeas at 400°F 20 min until crispy.','Assemble bowl: quinoa, kale, avocado.','Top with chickpeas and drizzle tahini dressing.']},
+
+{id:34,name:'Chickpea Burger',emoji:'🍔',ingCat:'chickpea',dishCat:'burger',tag:'American',diff:'medium',cal:395,pro:17,carb:55,fat:12,time:'30 min',
+ing:[{n:'Chickpeas',a:'1.5 cans',cal:540,pro:28.5,carb:90,fat:9},{n:'Oats',a:'½ cup',cal:153,pro:5.4,carb:27.4,fat:2.7},{n:'Garlic powder',a:'1 tsp',cal:9,pro:0.5,carb:2,fat:0},{n:'Burger buns',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Vegan fixings',a:'as needed',cal:40,pro:1.5,carb:7,fat:1}],
+steps:['Mash chickpeas with oats, garlic, cumin and paprika.','Form into patties; chill 15 min to firm up.','Pan-fry or grill 4 min per side until golden crust forms.','Build burger with preferred toppings.']},
+
+{id:35,name:'Chickpea Omelette',emoji:'🍳',ingCat:'chickpea',dishCat:'breakfast',tag:'Café style',diff:'easy',cal:265,pro:15,carb:28,fat:10,time:'15 min',
+ing:[{n:'Chickpea flour',a:'¾ cup',cal:267,pro:15,carb:40,fat:4.5},{n:'Water',a:'¾ cup',cal:0,pro:0,carb:0,fat:0},{n:'Kala namak (black salt)',a:'¼ tsp',cal:0,pro:0,carb:0,fat:0},{n:'Mixed veggies',a:'½ cup',cal:25,pro:1.5,carb:5,fat:0.3},{n:'Turmeric',a:'pinch',cal:1,pro:0,carb:0.2,fat:0}],
+steps:['Whisk chickpea flour with water, turmeric, kala namak to a pourable batter.','Pour into a heated oiled pan; cook 3 min without touching.','Add veggies on one half; fold over.','Cook 2 more min each side until set.']},
+
+{id:36,name:'Miso Ramen',emoji:'🍜',ingCat:'tofu',dishCat:'noodle',tag:'Japanese',diff:'medium',cal:445,pro:18,carb:60,fat:14,time:'35 min',
+ing:[{n:'Firm tofu',a:'200g',cal:176,pro:18,carb:4.4,fat:10},{n:'Ramen noodles',a:'200g',cal:280,pro:10,carb:56,fat:1},{n:'White miso paste',a:'3 tbsp',cal:69,pro:4.2,carb:9,fat:2.1},{n:'Bok choy',a:'2 heads',cal:18,pro:2,carb:3,fat:0.3},{n:'Shiitake mushrooms',a:'1 cup',cal:40,pro:2.8,carb:6.8,fat:0.6}],
+steps:['Simmer kombu and shiitake in water 15 min for broth.','Whisk in miso; do not boil after.','Pan-fry tofu cubes until golden.','Cook noodles; bowl up with broth, tofu, bok choy and corn.']},
+
+{id:37,name:'Tofu Scramble',emoji:'🍳',ingCat:'tofu',dishCat:'breakfast',tag:'Brunch',diff:'easy',cal:235,pro:18,carb:10,fat:14,time:'15 min',
+ing:[{n:'Firm tofu',a:'300g',cal:264,pro:27,carb:6.6,fat:15},{n:'Nutritional yeast',a:'2 tbsp',cal:30,pro:4,carb:3.5,fat:0.5},{n:'Turmeric',a:'½ tsp',cal:4,pro:0.1,carb:0.8,fat:0.1},{n:'Kala namak',a:'¼ tsp',cal:0,pro:0,carb:0,fat:0},{n:'Bell pepper',a:'½',cal:15,pro:0.5,carb:3,fat:0.15}],
+steps:['Crumble firm tofu into a hot oiled pan.','Season with turmeric, nutritional yeast and kala namak.','Toss in diced bell pepper and spinach.','Cook 6–8 min until slightly crispy. Serve on toast.']},
+
+{id:38,name:'Crispy Tofu Bowl',emoji:'🥢',ingCat:'tofu',dishCat:'bowl',tag:'Asian',diff:'easy',cal:390,pro:22,carb:44,fat:16,time:'25 min',
+ing:[{n:'Extra-firm tofu',a:'300g',cal:264,pro:27,carb:6.6,fat:15},{n:'Brown rice',a:'1 cup cooked',cal:216,pro:5,carb:45,fat:1.8},{n:'Edamame',a:'½ cup',cal:94,pro:9.2,carb:6.9,fat:4},{n:'Soy-ginger sauce',a:'3 tbsp',cal:50,pro:2,carb:6,fat:2},{n:'Sesame seeds',a:'1 tbsp',cal:52,pro:1.6,carb:2.1,fat:4.5}],
+steps:['Press tofu 20 min; cube and air-fry or bake at 425°F 25 min.','Assemble bowl with rice and edamame.','Top with crispy tofu.','Drizzle soy-ginger sauce and scatter sesame seeds.']},
+
+{id:39,name:'Mapo Tofu (vegan)',emoji:'🌶️',ingCat:'tofu',dishCat:'stir_fry',tag:'Sichuan',diff:'medium',cal:310,pro:16,carb:18,fat:20,time:'25 min',
+ing:[{n:'Silken tofu',a:'400g',cal:280,pro:28,carb:6,fat:14},{n:'Doubanjiang paste',a:'2 tbsp',cal:30,pro:1,carb:3,fat:2},{n:'Sichuan peppercorns',a:'1 tsp',cal:5,pro:0.2,carb:1,fat:0.3},{n:'Fermented black beans',a:'1 tbsp',cal:20,pro:1.5,carb:2,fat:0.5},{n:'Green onion',a:'2',cal:10,pro:0.3,carb:2.3,fat:0.1}],
+steps:['Fry doubanjiang in oil 2 min until fragrant.','Add fermented black beans and Sichuan peppercorns.','Gently add silken tofu cubes and vegetable broth.','Simmer 5 min; thicken with cornstarch slurry. Top with green onion.']},
+
+{id:40,name:'Agedashi Tofu',emoji:'🍶',ingCat:'tofu',dishCat:'fried',tag:'Japanese',diff:'medium',cal:275,pro:14,carb:22,fat:14,time:'20 min',
+ing:[{n:'Silken tofu',a:'300g',cal:210,pro:21,carb:4.5,fat:10.5},{n:'Cornstarch',a:'3 tbsp',cal:87,pro:0.1,carb:21,fat:0},{n:'Dashi broth (kombu)',a:'¾ cup',cal:10,pro:0.5,carb:2,fat:0},{n:'Soy sauce',a:'1 tbsp',cal:8,pro:1.2,carb:0.8,fat:0.1},{n:'Mirin',a:'1 tbsp',cal:24,pro:0.1,carb:5.5,fat:0}],
+steps:['Drain and dry silken tofu gently on paper towels.','Coat lightly in cornstarch.','Fry in 1 inch of hot oil until golden and crispy.','Serve in warm dashi broth with soy sauce, ginger and daikon.']},
+
+{id:41,name:'Tofu Tikka Masala',emoji:'🍛',ingCat:'tofu',dishCat:'curry',tag:'Indian',diff:'medium',cal:355,pro:20,carb:28,fat:18,time:'40 min',
+ing:[{n:'Firm tofu',a:'400g',cal:352,pro:36,carb:8.8,fat:20},{n:'Tikka masala sauce',a:'2 cups',cal:280,pro:8,carb:26,fat:16},{n:'Coconut cream',a:'¼ cup',cal:111,pro:1.1,carb:1.5,fat:12},{n:'Kasuri methi',a:'1 tsp',cal:3,pro:0.3,carb:0.5,fat:0.1},{n:'Cilantro',a:'¼ cup',cal:1,pro:0.1,carb:0.3,fat:0}],
+steps:['Cube tofu and marinate in yogurt-free tikka spices 30 min.','Bake or air-fry tofu until charred on edges.','Simmer tikka masala sauce base with coconut cream.','Add tofu; cook 10 min. Garnish with kasuri methi and cilantro.']},
+
+{id:42,name:'Tofu Stir-Fry',emoji:'🥦',ingCat:'tofu',dishCat:'stir_fry',tag:'Asian',diff:'easy',cal:310,pro:20,carb:22,fat:16,time:'20 min',
+ing:[{n:'Extra-firm tofu',a:'300g',cal:264,pro:27,carb:6.6,fat:15},{n:'Broccoli',a:'2 cups',cal:62,pro:5.1,carb:12,fat:0.8},{n:'Snap peas',a:'1 cup',cal:41,pro:2.7,carb:7.4,fat:0.2},{n:'Soy sauce',a:'3 tbsp',cal:24,pro:3.6,carb:2.4,fat:0.3},{n:'Sesame oil',a:'2 tsp',cal:80,pro:0,carb:0,fat:9}],
+steps:['Press and cube tofu; fry in sesame oil until golden on all sides.','Remove tofu; stir-fry broccoli and snap peas on high.','Return tofu; pour in soy sauce and garlic-ginger paste.','Toss, finish with sesame seeds and serve over rice.']},
+
+{id:43,name:'Tofu Katsu Curry',emoji:'🍱',ingCat:'tofu',dishCat:'curry',tag:'Japanese',diff:'medium',cal:510,pro:22,carb:68,fat:18,time:'45 min',
+ing:[{n:'Firm tofu',a:'300g',cal:264,pro:27,carb:6.6,fat:15},{n:'Panko breadcrumbs',a:'1 cup',cal:420,pro:14,carb:80,fat:5},{n:'Japanese curry roux (vegan)',a:'½ block',cal:180,pro:2,carb:20,fat:10},{n:'Rice',a:'1 cup cooked',cal:200,pro:4.3,carb:44,fat:0.4},{n:'Potato & carrot',a:'1 each',cal:115,pro:3,carb:26,fat:0.3}],
+steps:['Bread tofu slabs in flour, aquafaba and panko; fry until golden.','Make curry: simmer potato, carrot and onion in water; add roux.','Cook rice separately.','Plate rice with curry sauce and sliced katsu on top.']},
+
+{id:44,name:'Silken Tofu Chocolate Mousse',emoji:'🍫',ingCat:'tofu',dishCat:'dessert',tag:'Dessert',diff:'easy',cal:255,pro:8,carb:28,fat:12,time:'10 min',
+ing:[{n:'Silken tofu',a:'300g',cal:210,pro:21,carb:4.5,fat:10.5},{n:'Dark chocolate (melted)',a:'100g',cal:546,pro:5,carb:44,fat:36},{n:'Maple syrup',a:'3 tbsp',cal:156,pro:0,carb:40,fat:0},{n:'Vanilla',a:'1 tsp',cal:12,pro:0,carb:0.5,fat:0},{n:'Pinch of salt',a:'',cal:0,pro:0,carb:0,fat:0}],
+steps:['Melt chocolate over a double boiler; cool slightly.','Blend silken tofu until very smooth.','Add chocolate, maple syrup, vanilla and salt; blend again.','Chill 1 hour. Serve topped with berries.']},
+
+{id:45,name:'Red Lentil Dal',emoji:'🫘',ingCat:'lentil',dishCat:'curry',tag:'Indian',diff:'easy',cal:290,pro:18,carb:46,fat:5,time:'30 min',
+ing:[{n:'Red lentils',a:'1.5 cups',cal:600,pro:42,carb:102,fat:3},{n:'Tomatoes',a:'2',cal:36,pro:1.8,carb:7.8,fat:0.4},{n:'Onion',a:'1',cal:64,pro:1.7,carb:15,fat:0.1},{n:'Turmeric',a:'1 tsp',cal:8,pro:0.2,carb:1.5,fat:0.2},{n:'Cumin seeds',a:'1 tsp',cal:8,pro:0.4,carb:0.9,fat:0.5}],
+steps:['Boil lentils with turmeric in 3 cups water until mushy, ~20 min.','Make tarka: pop cumin seeds in hot oil, fry onion golden, add tomatoes.','Stir tarka into lentils.','Season with lemon, salt and serve with rice.']},
+
+{id:46,name:'Lentil Soup',emoji:'🥣',ingCat:'lentil',dishCat:'soup',tag:'Comfort',diff:'easy',cal:268,pro:17,carb:42,fat:4,time:'35 min',
+ing:[{n:'Green lentils',a:'2 cups',cal:700,pro:48,carb:120,fat:2.4},{n:'Carrots',a:'3',cal:75,pro:1.7,carb:17.6,fat:0.4},{n:'Celery',a:'3 stalks',cal:20,pro:1,carb:4,fat:0.2},{n:'Diced tomatoes',a:'1 can',cal:40,pro:2,carb:8,fat:0.5},{n:'Vegetable broth',a:'6 cups',cal:48,pro:2.4,carb:9.6,fat:0}],
+steps:['Sauté onion, carrot and celery in olive oil 8 min.','Add spices; toast 1 min. Add lentils, tomatoes and broth.','Simmer 25 min until lentils tender.','Blend half for creamy texture. Season with lemon.']},
+
+{id:47,name:'Lentil Shepherd\'s Pie',emoji:'🥧',ingCat:'lentil',dishCat:'baked',tag:'British',diff:'medium',cal:380,pro:18,carb:58,fat:8,time:'60 min',
+ing:[{n:'Green lentils',a:'1.5 cups',cal:525,pro:36,carb:90,fat:1.8},{n:'Mashed potato (vegan)',a:'3 cups',cal:390,pro:9,carb:87,fat:3},{n:'Mushrooms',a:'200g',cal:44,pro:4.8,carb:6,fat:0.6},{n:'Carrot & peas',a:'1 cup each',cal:100,pro:5,carb:22,fat:0.4},{n:'Tomato paste',a:'2 tbsp',cal:26,pro:1.4,carb:5.8,fat:0.2}],
+steps:['Cook lentils. Sauté vegetables; stir in lentils, tomato paste and herbs.','Season filling and pour into a baking dish.','Spread creamy mashed potato over top.','Bake at 375°F 30 min until top is golden.']},
+
+{id:48,name:'Lentil Tacos',emoji:'🌮',ingCat:'lentil',dishCat:'taco',tag:'Mexican',diff:'easy',cal:335,pro:16,carb:48,fat:9,time:'25 min',
+ing:[{n:'Brown lentils',a:'1 cup',cal:350,pro:24,carb:60,fat:1.6},{n:'Taco seasoning',a:'2 tbsp',cal:20,pro:0.6,carb:4,fat:0.5},{n:'Corn tortillas',a:'4',cal:200,pro:4,carb:44,fat:2},{n:'Pico de gallo',a:'½ cup',cal:20,pro:1,carb:4,fat:0.1},{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5}],
+steps:['Cook lentils until tender; drain.','Toss with taco seasoning and a splash of water; simmer 5 min.','Warm tortillas.','Build tacos with lentil filling, pico and avocado slices.']},
+
+{id:49,name:'Lentil Bolognese',emoji:'🍝',ingCat:'lentil',dishCat:'pasta',tag:'Italian',diff:'easy',cal:440,pro:22,carb:72,fat:8,time:'35 min',
+ing:[{n:'Beluga lentils',a:'1 cup',cal:350,pro:24,carb:60,fat:1.6},{n:'Spaghetti',a:'300g',cal:420,pro:15,carb:84,fat:1.8},{n:'Crushed tomatoes',a:'2 cups',cal:80,pro:4,carb:16,fat:1},{n:'Carrot & onion',a:'1 each',cal:88,pro:2.4,carb:20,fat:0.3},{n:'Red wine (vegan)',a:'½ cup',cal:80,pro:0.1,carb:2.5,fat:0}],
+steps:['Sauté onion, carrot and celery until soft.','Add red wine and reduce. Add tomatoes and cooked lentils.','Simmer 20 min until thick and rich.','Toss with spaghetti, pasta water and nutritional yeast.']},
+
+{id:50,name:'Lentil Burger',emoji:'🍔',ingCat:'lentil',dishCat:'burger',tag:'American',diff:'medium',cal:375,pro:18,carb:52,fat:10,time:'30 min',
+ing:[{n:'Cooked lentils',a:'1.5 cups',cal:525,pro:36,carb:90,fat:1.8},{n:'Rolled oats',a:'½ cup',cal:153,pro:5.4,carb:27.4,fat:2.7},{n:'Smoked paprika',a:'1 tsp',cal:6,pro:0.3,carb:1.2,fat:0.3},{n:'Burger buns',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Vegan fixings',a:'as desired',cal:40,pro:1.5,carb:7,fat:1}],
+steps:['Pulse lentils with oats, paprika, garlic and flax egg until cohesive.','Shape into patties; chill 15 min.','Pan-fry 4 min per side until golden crust.','Serve on toasted bun with your preferred toppings.']},
+
+{id:51,name:'Avocado Toast',emoji:'🥑',ingCat:'avocado',dishCat:'breakfast',tag:'Brunch',diff:'easy',cal:380,pro:12,carb:34,fat:24,time:'10 min',
+ing:[{n:'Sourdough',a:'2 slices',cal:200,pro:8,carb:38,fat:1},{n:'Avocado',a:'1 large',cal:234,pro:3,carb:12,fat:21},{n:'Cherry tomatoes',a:'6',cal:18,pro:0.9,carb:4,fat:0.2},{n:'Lemon juice',a:'1 tbsp',cal:4,pro:0,carb:1.3,fat:0},{n:'Red pepper flakes',a:'pinch',cal:2,pro:0.1,carb:0.4,fat:0.1}],
+steps:['Toast bread until golden.','Mash avocado with lemon, salt and pepper.','Spread on toast and top with sliced tomatoes.','Finish with chili flakes and microgreens.']},
+
+{id:52,name:'Avocado Chocolate Mousse',emoji:'🍫',ingCat:'avocado',dishCat:'dessert',tag:'Dessert',diff:'easy',cal:310,pro:5,carb:28,fat:22,time:'10 min',
+ing:[{n:'Ripe avocados',a:'2 large',cal:468,pro:5.9,carb:24,fat:42},{n:'Cacao powder',a:'4 tbsp',cal:60,pro:4,carb:10,fat:2},{n:'Maple syrup',a:'3 tbsp',cal:156,pro:0,carb:40,fat:0},{n:'Coconut cream',a:'¼ cup',cal:111,pro:1.1,carb:1.5,fat:12},{n:'Vanilla',a:'1 tsp',cal:12,pro:0,carb:0.5,fat:0}],
+steps:['Blend avocado flesh until smooth.','Add cacao, maple syrup, coconut cream and vanilla.','Blend until silky. Chill 30 min.','Serve in glasses with berries on top.']},
+
+{id:53,name:'Guacamole',emoji:'🥑',ingCat:'avocado',dishCat:'dip',tag:'Mexican',diff:'easy',cal:190,pro:3,carb:12,fat:17,time:'10 min',
+ing:[{n:'Ripe avocados',a:'3',cal:702,pro:8.9,carb:36,fat:63},{n:'Lime juice',a:'2 tbsp',cal:8,pro:0.1,carb:2.8,fat:0},{n:'Red onion',a:'¼ cup',cal:16,pro:0.4,carb:3.7,fat:0},{n:'Jalapeño',a:'1',cal:4,pro:0.2,carb:0.9,fat:0.1},{n:'Cilantro',a:'¼ cup',cal:1,pro:0.1,carb:0.3,fat:0}],
+steps:['Halve and pit avocados; scoop flesh into a bowl.','Mash to your preferred chunkiness.','Fold in lime juice, diced onion, jalapeño and cilantro.','Season generously with salt. Serve with tortilla chips.']},
+
+{id:54,name:'Avocado Pasta',emoji:'🍝',ingCat:'avocado',dishCat:'pasta',tag:'Fusion',diff:'easy',cal:490,pro:14,carb:68,fat:20,time:'20 min',
+ing:[{n:'Linguine',a:'300g',cal:420,pro:15,carb:84,fat:1.8},{n:'Avocado',a:'2',cal:468,pro:5.9,carb:24,fat:42},{n:'Basil',a:'1 cup',cal:6,pro:0.8,carb:0.8,fat:0.2},{n:'Garlic',a:'2 cloves',cal:9,pro:0.4,carb:2,fat:0},{n:'Lemon juice',a:'2 tbsp',cal:8,pro:0.1,carb:2.6,fat:0}],
+steps:['Cook linguine until al dente; reserve 1 cup pasta water.','Blend avocado, basil, garlic, lemon juice and olive oil until creamy.','Toss hot pasta with avocado sauce, adding pasta water to loosen.','Serve immediately with extra basil and pine nuts.']},
+
+{id:55,name:'Avocado Sushi Roll',emoji:'🍱',ingCat:'avocado',dishCat:'sushi',tag:'Japanese',diff:'medium',cal:345,pro:7,carb:58,fat:10,time:'30 min',
+ing:[{n:'Sushi rice',a:'1.5 cups cooked',cal:300,pro:6,carb:66,fat:0.4},{n:'Nori sheets',a:'4',cal:20,pro:3,carb:2,fat:0.4},{n:'Avocado',a:'1',cal:234,pro:3,carb:12,fat:21},{n:'Cucumber',a:'½',cal:8,pro:0.3,carb:1.8,fat:0.1},{n:'Rice vinegar',a:'2 tbsp',cal:6,pro:0,carb:1.4,fat:0}],
+steps:['Season cooked rice with rice vinegar and sugar.','Lay nori on bamboo mat; spread rice leaving 1-inch border.','Place avocado and cucumber strips across center.','Roll tightly; slice with a wet knife.']},
+
+{id:56,name:'Avocado Smoothie',emoji:'🥤',ingCat:'avocado',dishCat:'smoothie',tag:'Tropical',diff:'easy',cal:320,pro:5,carb:35,fat:20,time:'5 min',
+ing:[{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5},{n:'Banana',a:'1 frozen',cal:89,pro:1.1,carb:23,fat:0.3},{n:'Coconut milk',a:'1 cup',cal:445,pro:4.6,carb:6,fat:48},{n:'Lime juice',a:'1 tbsp',cal:4,pro:0,carb:1.3,fat:0},{n:'Agave',a:'1 tbsp',cal:64,pro:0,carb:17,fat:0}],
+steps:['Add all ingredients to a blender.','Blend on high 60 seconds until completely smooth.','Taste; add more lime or agave as desired.','Pour over ice and serve immediately.']},
+
+{id:57,name:'Mushroom Risotto',emoji:'🍄',ingCat:'mushroom',dishCat:'rice',tag:'Italian',diff:'hard',cal:395,pro:12,carb:58,fat:12,time:'45 min',
+ing:[{n:'Arborio rice',a:'1.5 cups',cal:600,pro:12,carb:130,fat:2},{n:'Mixed mushrooms',a:'400g',cal:88,pro:9.6,carb:12,fat:1.2},{n:'Vegetable broth',a:'5 cups',cal:40,pro:2,carb:8,fat:0},{n:'White wine (vegan)',a:'½ cup',cal:80,pro:0.1,carb:2.5,fat:0},{n:'Nutritional yeast',a:'4 tbsp',cal:60,pro:8,carb:7,fat:1}],
+steps:['Sauté mushrooms until golden; set aside.','Toast rice in same pan; deglaze with wine.','Add broth ladle by ladle over 20–25 min, stirring constantly.','Stir in mushrooms and nutritional yeast. Season generously.']},
+
+{id:58,name:'Mushroom Tacos',emoji:'🌮',ingCat:'mushroom',dishCat:'taco',tag:'Mexican',diff:'easy',cal:295,pro:9,carb:42,fat:10,time:'20 min',
+ing:[{n:'King oyster mushrooms',a:'300g',cal:99,pro:5.4,carb:16.2,fat:1.5},{n:'Corn tortillas',a:'4',cal:200,pro:4,carb:44,fat:2},{n:'Taco spices',a:'2 tsp',cal:10,pro:0.3,carb:2,fat:0.3},{n:'Pickled red onion',a:'¼ cup',cal:12,pro:0.4,carb:3,fat:0},{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5}],
+steps:['Pull king oyster mushrooms into strands.','Sauté on high heat with taco spices until charred.','Warm tortillas.','Build tacos with mushrooms, pickled onion and avocado.']},
+
+{id:59,name:'Mushroom Soup',emoji:'🥣',ingCat:'mushroom',dishCat:'soup',tag:'French',diff:'easy',cal:215,pro:7,carb:20,fat:12,time:'30 min',
+ing:[{n:'Mixed mushrooms',a:'500g',cal:110,pro:12,carb:15,fat:1.5},{n:'Onion',a:'1',cal:64,pro:1.7,carb:15,fat:0.1},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Coconut cream',a:'½ cup',cal:222,pro:2.3,carb:3,fat:24},{n:'Thyme',a:'1 tsp',cal:3,pro:0.1,carb:0.6,fat:0}],
+steps:['Sauté onion and garlic until golden.','Add mushrooms and cook until their liquid evaporates.','Pour in broth; simmer 15 min.','Blend smooth; stir in coconut cream, season and serve.']},
+
+{id:60,name:'Mushroom Burger',emoji:'🍔',ingCat:'mushroom',dishCat:'burger',tag:'American',diff:'easy',cal:360,pro:10,carb:44,fat:16,time:'20 min',
+ing:[{n:'Portobello caps',a:'2 large',cal:44,pro:4,carb:7.6,fat:0.8},{n:'Burger buns (vegan)',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Vegan aioli',a:'2 tbsp',cal:90,pro:0,carb:1,fat:10},{n:'Roasted red pepper',a:'½',cal:20,pro:0.7,carb:4,fat:0.2},{n:'Arugula',a:'1 cup',cal:5,pro:0.5,carb:0.8,fat:0.1}],
+steps:['Marinate portobellos in soy sauce, garlic and balsamic 20 min.','Grill or roast 5 min per side.','Toast buns and spread aioli.','Stack portobello, roasted pepper and arugula.']},
+
+{id:61,name:'Stuffed Mushrooms',emoji:'🍄',ingCat:'mushroom',dishCat:'snack',tag:'Party',diff:'easy',cal:195,pro:8,carb:16,fat:11,time:'30 min',
+ing:[{n:'Large cremini mushrooms',a:'12',cal:66,pro:7,carb:10,fat:1},{n:'Breadcrumbs',a:'½ cup',cal:230,pro:8,carb:43,fat:3},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Spinach',a:'1 cup',cal:7,pro:0.9,carb:1.1,fat:0.1},{n:'Nutritional yeast',a:'3 tbsp',cal:45,pro:6,carb:5,fat:0.8}],
+steps:['Remove mushroom stems; chop finely.','Sauté stems with garlic and spinach; mix with breadcrumbs.','Fill caps generously; top with nutritional yeast.','Bake at 375°F 20 min until golden.']},
+
+{id:62,name:'Mushroom Stir-Fry',emoji:'🥢',ingCat:'mushroom',dishCat:'stir_fry',tag:'Asian',diff:'easy',cal:280,pro:10,carb:30,fat:13,time:'15 min',
+ing:[{n:'Shiitake & oyster mushrooms',a:'400g',cal:88,pro:9.6,carb:12,fat:1.2},{n:'Bok choy',a:'2 heads',cal:18,pro:2,carb:3,fat:0.3},{n:'Oyster sauce (vegan)',a:'2 tbsp',cal:30,pro:0.5,carb:7,fat:0.1},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Toasted sesame oil',a:'2 tsp',cal:80,pro:0,carb:0,fat:9}],
+steps:['Heat wok until smoking. Add oil and garlic.','Toss in mushrooms on high heat; don\'t stir for 1 min.','Add bok choy and oyster sauce; toss 2 min.','Drizzle sesame oil and serve over rice.']},
+
+{id:63,name:'Spinach Palak Paneer (vegan)',emoji:'🌿',ingCat:'spinach',dishCat:'curry',tag:'Indian',diff:'medium',cal:310,pro:16,carb:18,fat:20,time:'35 min',
+ing:[{n:'Spinach',a:'500g',cal:115,pro:14.4,carb:17.6,fat:1.6},{n:'Firm tofu (as paneer)',a:'300g',cal:264,pro:27,carb:6.6,fat:15},{n:'Onion',a:'1',cal:64,pro:1.7,carb:15,fat:0.1},{n:'Garam masala',a:'2 tsp',cal:14,pro:0.5,carb:3,fat:0.5},{n:'Coconut cream',a:'¼ cup',cal:111,pro:1.1,carb:1.5,fat:12}],
+steps:['Fry tofu cubes until golden; set aside.','Blanch spinach and blend smooth with onion and spices.','Pour purée into pan; simmer 10 min.','Add tofu and coconut cream; cook 5 min. Serve with naan.']},
+
+{id:64,name:'Spinach Smoothie',emoji:'🥤',ingCat:'spinach',dishCat:'smoothie',tag:'Detox',diff:'easy',cal:195,pro:6,carb:38,fat:4,time:'5 min',
+ing:[{n:'Spinach',a:'2 cups',cal:14,pro:1.8,carb:2.2,fat:0.2},{n:'Banana',a:'1',cal:89,pro:1.1,carb:23,fat:0.3},{n:'Apple',a:'1',cal:95,pro:0.5,carb:25,fat:0.3},{n:'Coconut water',a:'1 cup',cal:46,pro:1.7,carb:9,fat:0.5},{n:'Ginger',a:'1 tsp',cal:2,pro:0,carb:0.4,fat:0}],
+steps:['Add spinach and coconut water to blender first.','Blend until smooth then add banana, apple and ginger.','Blend on high 60 seconds.','Serve over ice immediately.']},
+
+{id:65,name:'Spinach Salad',emoji:'🥗',ingCat:'spinach',dishCat:'salad',tag:'Fresh',diff:'easy',cal:230,pro:8,carb:20,fat:14,time:'10 min',
+ing:[{n:'Baby spinach',a:'3 cups',cal:21,pro:2.7,carb:3.3,fat:0.3},{n:'Strawberries',a:'1 cup',cal:49,pro:1,carb:12,fat:0.5},{n:'Walnuts',a:'¼ cup',cal:196,pro:4.6,carb:4.1,fat:19.6},{n:'Red onion',a:'¼',cal:16,pro:0.4,carb:3.7,fat:0},{n:'Balsamic vinaigrette',a:'3 tbsp',cal:90,pro:0,carb:9,fat:6}],
+steps:['Wash and dry baby spinach.','Slice strawberries; thinly slice red onion.','Toss spinach with strawberries, walnuts and onion.','Drizzle balsamic vinaigrette just before serving.']},
+
+{id:66,name:'Creamed Spinach',emoji:'🌿',ingCat:'spinach',dishCat:'side',tag:'Comfort',diff:'easy',cal:185,pro:8,carb:12,fat:12,time:'15 min',
+ing:[{n:'Fresh spinach',a:'500g',cal:115,pro:14.4,carb:17.6,fat:1.6},{n:'Coconut cream',a:'½ cup',cal:222,pro:2.3,carb:3,fat:24},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Nutmeg',a:'pinch',cal:2,pro:0,carb:0.2,fat:0.1},{n:'Nutritional yeast',a:'2 tbsp',cal:30,pro:4,carb:3.5,fat:0.5}],
+steps:['Wilt spinach in a large pan; drain any excess liquid.','Sauté garlic then add coconut cream and nutritional yeast.','Add spinach back; simmer 5 min until thickened.','Season with nutmeg, salt and pepper.']},
+
+{id:67,name:'Sweet Potato Curry',emoji:'🍠',ingCat:'potato',dishCat:'curry',tag:'Thai',diff:'easy',cal:350,pro:8,carb:52,fat:14,time:'35 min',
+ing:[{n:'Sweet potato',a:'2 large',cal:206,pro:4.6,carb:48,fat:0.4},{n:'Coconut milk',a:'1 can',cal:445,pro:4.6,carb:6,fat:48},{n:'Red curry paste',a:'2 tbsp',cal:40,pro:0.8,carb:6,fat:2},{n:'Chickpeas',a:'1 can',cal:360,pro:19,carb:60,fat:6},{n:'Lime leaves',a:'3',cal:2,pro:0.1,carb:0.5,fat:0}],
+steps:['Fry curry paste in oil 2 min.','Add cubed sweet potato and stir to coat.','Pour in coconut milk and chickpeas; bring to simmer.','Cook 20 min until potato is tender. Finish with lime.']},
+
+{id:68,name:'Potato Soup',emoji:'🥣',ingCat:'potato',dishCat:'soup',tag:'Comfort',diff:'easy',cal:295,pro:7,carb:48,fat:9,time:'35 min',
+ing:[{n:'Potatoes',a:'4 large',cal:620,pro:13.6,carb:144,fat:0.8},{n:'Onion',a:'1',cal:64,pro:1.7,carb:15,fat:0.1},{n:'Vegetable broth',a:'4 cups',cal:32,pro:1.6,carb:6.4,fat:0},{n:'Coconut milk',a:'½ cup',cal:222,pro:2.3,carb:3,fat:24},{n:'Chives',a:'2 tbsp',cal:2,pro:0.1,carb:0.3,fat:0}],
+steps:['Dice potatoes and onion. Sauté onion until soft.','Add potatoes and broth; simmer 20 min until very tender.','Blend until smooth; stir in coconut milk.','Season and serve with chives and vegan sour cream.']},
+
+{id:69,name:'Loaded Baked Potato',emoji:'🥔',ingCat:'potato',dishCat:'main',tag:'American',diff:'easy',cal:420,pro:12,carb:72,fat:12,time:'60 min',
+ing:[{n:'Russet potatoes',a:'2 large',cal:310,pro:6.8,carb:72,fat:0.4},{n:'Vegan sour cream',a:'3 tbsp',cal:75,pro:0,carb:2,fat:7},{n:'Chives',a:'2 tbsp',cal:2,pro:0.1,carb:0.3,fat:0},{n:'Broccoli',a:'1 cup',cal:31,pro:2.6,carb:6,fat:0.4},{n:'Cashew cheese',a:'2 tbsp',cal:80,pro:2,carb:4,fat:6}],
+steps:['Scrub potatoes; prick with fork and bake at 425°F 50–60 min.','Steam broccoli florets until tender-crisp.','Split potato and fluff interior with a fork.','Top with broccoli, cashew cheese, sour cream and chives.']},
+
+{id:70,name:'Potato Gnocchi',emoji:'🍝',ingCat:'potato',dishCat:'pasta',tag:'Italian',diff:'hard',cal:460,pro:11,carb:80,fat:10,time:'60 min',
+ing:[{n:'Russet potatoes',a:'1kg',cal:770,pro:17,carb:179,fat:1},{n:'All-purpose flour',a:'1.5 cups',cal:680,pro:20,carb:143,fat:1.8},{n:'Olive oil',a:'2 tbsp',cal:239,pro:0,carb:0,fat:27},{n:'Marinara sauce',a:'1 cup',cal:70,pro:2,carb:10,fat:2.5},{n:'Fresh basil',a:'½ cup',cal:3,pro:0.4,carb:0.4,fat:0.1}],
+steps:['Bake and rice potatoes while warm; spread on board to cool.','Mix in flour gradually until a soft dough forms.','Roll into ropes; cut into 1-inch pieces.','Boil until gnocchi float; toss in your favorite sauce.']},
+
+{id:71,name:'Banana Nice Cream',emoji:'🍦',ingCat:'banana',dishCat:'dessert',tag:'Tropical',diff:'easy',cal:150,pro:2,carb:38,fat:0.5,time:'5 min',
+ing:[{n:'Frozen bananas',a:'3',cal:267,pro:3.3,carb:69,fat:0.9},{n:'Plant milk',a:'2 tbsp',cal:13,pro:0.5,carb:0.5,fat:1},{n:'Vanilla',a:'½ tsp',cal:6,pro:0,carb:0.3,fat:0},{n:'Optional toppings',a:'as desired',cal:50,pro:1,carb:8,fat:2},{n:'Pinch of salt',a:'',cal:0,pro:0,carb:0,fat:0}],
+steps:['Freeze peeled bananas overnight.','Blend frozen bananas with plant milk and vanilla.','Scrape down sides and blend again until silky.','Serve as soft-serve or freeze 1 hour for scoopable texture.']},
+
+{id:72,name:'Banana Oat Pancakes',emoji:'🥞',ingCat:'banana',dishCat:'breakfast',tag:'Wholesome',diff:'easy',cal:315,pro:10,carb:55,fat:7,time:'20 min',
+ing:[{n:'Ripe bananas',a:'2',cal:178,pro:2.2,carb:46,fat:0.7},{n:'Rolled oats',a:'1 cup',cal:307,pro:10.7,carb:55,fat:5.3},{n:'Plant milk',a:'½ cup',cal:26,pro:1,carb:1,fat:2},{n:'Baking powder',a:'1 tsp',cal:2,pro:0,carb:0.6,fat:0},{n:'Maple syrup',a:'2 tbsp',cal:104,pro:0,carb:27,fat:0}],
+steps:['Blend oats to flour. Add bananas, plant milk, baking powder.','Blend to smooth thick batter.','Cook on medium non-stick 2–3 min per side.','Serve with berries and maple syrup.']},
+
+{id:73,name:'Banana Smoothie Bowl',emoji:'🫐',ingCat:'banana',dishCat:'breakfast',tag:'Power Bowl',diff:'easy',cal:390,pro:8,carb:66,fat:12,time:'8 min',
+ing:[{n:'Frozen banana',a:'2',cal:178,pro:2.2,carb:46,fat:0.7},{n:'Frozen acai',a:'100g',cal:70,pro:1,carb:6,fat:5},{n:'Almond milk',a:'¼ cup',cal:13,pro:0.5,carb:0.5,fat:1},{n:'Granola',a:'¼ cup',cal:120,pro:3,carb:20,fat:3.5},{n:'Coconut flakes',a:'1 tbsp',cal:35,pro:0.4,carb:1.5,fat:3.3}],
+steps:['Blend frozen banana and acai with almond milk until very thick.','Pour into a cold bowl.','Top artfully with granola, coconut flakes, sliced banana and berries.','Eat immediately while cold.']},
+
+{id:74,name:'Zucchini Pasta',emoji:'🥒',ingCat:'zucchini',dishCat:'pasta',tag:'Light',diff:'easy',cal:280,pro:8,carb:42,fat:10,time:'15 min',
+ing:[{n:'Zucchini',a:'3 large',cal:198,pro:14.4,carb:42,fat:3.6},{n:'Cherry tomatoes',a:'1 cup',cal:26,pro:1.3,carb:5.8,fat:0.2},{n:'Garlic',a:'3 cloves',cal:13,pro:0.6,carb:3,fat:0},{n:'Basil pesto (vegan)',a:'3 tbsp',cal:180,pro:3,carb:6,fat:16},{n:'Pine nuts',a:'2 tbsp',cal:114,pro:2.4,carb:2.2,fat:11}],
+steps:['Spiralize zucchini into noodles.','Sauté garlic and cherry tomatoes 3 min.','Add zucchini noodles; toss just 2 min to heat through.','Dollop pesto, toss and scatter pine nuts on top.']},
+
+{id:75,name:'Zucchini Fritters',emoji:'🥒',ingCat:'zucchini',dishCat:'snack',tag:'Crispy',diff:'easy',cal:220,pro:8,carb:26,fat:10,time:'25 min',
+ing:[{n:'Zucchini',a:'2 large',cal:66,pro:4.8,carb:14,fat:1.2},{n:'Chickpea flour',a:'½ cup',cal:178,pro:10,carb:26.5,fat:3},{n:'Garlic powder',a:'1 tsp',cal:9,pro:0.5,carb:2,fat:0},{n:'Flax egg',a:'1',cal:37,pro:1.3,carb:2,fat:2.9},{n:'Fresh herbs',a:'¼ cup',cal:3,pro:0.3,carb:0.5,fat:0}],
+steps:['Grate zucchini; squeeze out as much moisture as possible.','Mix with chickpea flour, flax egg, garlic, herbs and salt.','Form into patties; pan-fry in oil 3 min per side.','Serve with vegan tzatziki.']},
+
+{id:76,name:'Stuffed Zucchini',emoji:'🫙',ingCat:'zucchini',dishCat:'baked',tag:'Mediterranean',diff:'medium',cal:270,pro:10,carb:30,fat:12,time:'40 min',
+ing:[{n:'Zucchini',a:'3 large',cal:99,pro:7.2,carb:21,fat:1.8},{n:'Quinoa',a:'½ cup cooked',cal:111,pro:4,carb:19.5,fat:1.75},{n:'Cherry tomatoes',a:'1 cup',cal:26,pro:1.3,carb:5.8,fat:0.2},{n:'Herbs de Provence',a:'2 tsp',cal:6,pro:0.2,carb:1.4,fat:0.2},{n:'Olive oil',a:'2 tbsp',cal:239,pro:0,carb:0,fat:27}],
+steps:['Halve zucchini and scoop out flesh; dice flesh.','Cook quinoa; mix with diced zucchini flesh, tomatoes and herbs.','Fill zucchini boats with quinoa mixture.','Drizzle oil; bake at 400°F 20 min.']},
+
+{id:77,name:'Cauliflower Steak',emoji:'🥦',ingCat:'cauliflower',dishCat:'roasted',tag:'Gourmet',diff:'easy',cal:245,pro:7,carb:22,fat:15,time:'30 min',
+ing:[{n:'Cauliflower',a:'1 large head',cal:145,pro:11,carb:29,fat:1.6},{n:'Harissa paste',a:'2 tbsp',cal:30,pro:0.8,carb:4,fat:1.5},{n:'Olive oil',a:'3 tbsp',cal:358,pro:0,carb:0,fat:40},{n:'Tahini',a:'2 tbsp',cal:113,pro:3.3,carb:4,fat:10},{n:'Lemon',a:'1',cal:17,pro:0.6,carb:5.4,fat:0.2}],
+steps:['Cut cauliflower into thick steaks.','Brush with harissa-olive oil mixture.','Sear in oven-safe pan, then roast at 425°F 15 min.','Plate on tahini, squeeze lemon and top with parsley.']},
+
+{id:78,name:'Cauliflower Buffalo Wings',emoji:'🌶️',ingCat:'cauliflower',dishCat:'snack',tag:'American',diff:'easy',cal:270,pro:7,carb:36,fat:10,time:'35 min',
+ing:[{n:'Cauliflower florets',a:'1 head',cal:145,pro:11,carb:29,fat:1.6},{n:'Chickpea flour batter',a:'¾ cup flour',cal:267,pro:15,carb:40,fat:4.5},{n:'Hot sauce',a:'½ cup',cal:20,pro:0.8,carb:4,fat:0},{n:'Vegan butter',a:'2 tbsp',cal:200,pro:0,carb:0,fat:22},{n:'Ranch dip (vegan)',a:'3 tbsp',cal:90,pro:0.5,carb:2,fat:9}],
+steps:['Coat cauliflower in thin chickpea flour batter.','Bake at 450°F 20 min until crispy.','Toss in hot sauce + melted vegan butter mixture.','Return to oven 5 min. Serve with vegan ranch.']},
+
+{id:79,name:'Cauliflower Rice',emoji:'🍚',ingCat:'cauliflower',dishCat:'side',tag:'Low-carb',diff:'easy',cal:110,pro:5,carb:12,fat:6,time:'10 min',
+ing:[{n:'Cauliflower',a:'1 medium head',cal:100,pro:8,carb:20,fat:1},{n:'Garlic',a:'2 cloves',cal:9,pro:0.4,carb:2,fat:0},{n:'Olive oil',a:'2 tbsp',cal:239,pro:0,carb:0,fat:27},{n:'Salt & pepper',a:'to taste',cal:0,pro:0,carb:0,fat:0},{n:'Green onion',a:'2',cal:10,pro:0.3,carb:2.3,fat:0.1}],
+steps:['Pulse cauliflower in food processor until rice-sized.','Sauté garlic in oil 1 min.','Add cauliflower rice; cook on medium-high 5–6 min tossing often.','Season and garnish with green onion.']},
+
+{id:80,name:'Açaí Smoothie Bowl',emoji:'🫐',ingCat:'banana',dishCat:'breakfast',tag:'Brazilian',diff:'easy',cal:420,pro:9,carb:68,fat:14,time:'8 min',
+ing:[{n:'Frozen açaí',a:'100g',cal:70,pro:1,carb:6,fat:5},{n:'Frozen banana',a:'1',cal:89,pro:1.1,carb:23,fat:0.3},{n:'Almond milk',a:'¼ cup',cal:13,pro:0.5,carb:0.5,fat:1},{n:'Granola',a:'¼ cup',cal:120,pro:3,carb:20,fat:3.5},{n:'Fresh berries',a:'½ cup',cal:35,pro:0.7,carb:8.5,fat:0.3}],
+steps:['Blend açaí, banana and almond milk until thick.','Pour into chilled bowl.','Top with granola, berries and banana slices.','Serve immediately.']},
+
+{id:81,name:'Tomato Basil Pasta',emoji:'🍅',ingCat:'tomato',dishCat:'pasta',tag:'Italian',diff:'easy',cal:425,pro:14,carb:72,fat:11,time:'20 min',
+ing:[{n:'Pasta',a:'400g',cal:560,pro:20,carb:112,fat:2.4},{n:'Cherry tomatoes',a:'2 cups',cal:52,pro:2.6,carb:11.5,fat:0.5},{n:'Fresh basil',a:'1 cup',cal:6,pro:0.8,carb:0.8,fat:0.2},{n:'Garlic',a:'4 cloves',cal:18,pro:0.8,carb:4,fat:0.1},{n:'Olive oil',a:'¼ cup',cal:477,pro:0,carb:0,fat:54}],
+steps:['Cook pasta in well-salted water.','Gently fry garlic in oil; add tomatoes until they burst.','Toss pasta directly in tomatoes with pasta water.','Fold in basil; season generously.']},
+
+{id:82,name:'Gazpacho',emoji:'🍅',ingCat:'tomato',dishCat:'soup',tag:'Spanish',diff:'easy',cal:145,pro:4,carb:22,fat:6,time:'15 min',
+ing:[{n:'Ripe tomatoes',a:'6 large',cal:216,pro:10.6,carb:46.7,fat:2.4},{n:'Cucumber',a:'1',cal:32,pro:1.4,carb:7.3,fat:0.2},{n:'Red bell pepper',a:'1',cal:31,pro:1,carb:6,fat:0.3},{n:'Garlic',a:'2 cloves',cal:9,pro:0.4,carb:2,fat:0},{n:'Sherry vinegar',a:'2 tbsp',cal:10,pro:0,carb:2,fat:0}],
+steps:['Roughly chop all vegetables.','Blend until completely smooth.','Drizzle in olive oil while blending to emulsify.','Season; chill 2 hours. Serve very cold.']},
+
+{id:83,name:'Shakshuka (vegan)',emoji:'🍳',ingCat:'tomato',dishCat:'skillet',tag:'Middle Eastern',diff:'easy',cal:255,pro:10,carb:26,fat:12,time:'25 min',
+ing:[{n:'Diced tomatoes',a:'2 cans',cal:80,pro:4,carb:16,fat:1},{n:'Silken tofu',a:'200g',cal:140,pro:14,carb:3,fat:7},{n:'Bell peppers',a:'2',cal:62,pro:2,carb:12,fat:0.6},{n:'Cumin & paprika',a:'1 tsp each',cal:10,pro:0.4,carb:2,fat:0.4},{n:'Fresh herbs',a:'¼ cup',cal:3,pro:0.3,carb:0.5,fat:0}],
+steps:['Sauté peppers and onion. Add spices.','Pour in tomatoes; simmer until thickened.','Nestle spoonfuls of silken tofu in the sauce.','Cover and cook 8 min. Garnish with herbs; serve with bread.']},
+
+{id:84,name:'Chia Pudding',emoji:'🥥',ingCat:'banana',dishCat:'breakfast',tag:'Prep-ahead',diff:'easy',cal:275,pro:9,carb:30,fat:14,time:'5 min + overnight',
+ing:[{n:'Chia seeds',a:'6 tbsp',cal:270,pro:9,carb:24,fat:17},{n:'Coconut milk',a:'1.5 cups',cal:334,pro:3.5,carb:5,fat:36},{n:'Maple syrup',a:'2 tbsp',cal:104,pro:0,carb:27,fat:0},{n:'Vanilla',a:'½ tsp',cal:6,pro:0,carb:0.3,fat:0},{n:'Mango & kiwi',a:'½ each',cal:51,pro:0.8,carb:12.5,fat:0.4}],
+steps:['Whisk chia seeds with coconut milk, syrup and vanilla.','Stir again after 5 min to prevent clumping.','Refrigerate overnight until thick.','Top with fresh tropical fruits.']},
+
+{id:85,name:'Overnight Oats',emoji:'🫐',ingCat:'banana',dishCat:'breakfast',tag:'Prep-ahead',diff:'easy',cal:380,pro:12,carb:60,fat:10,time:'5 min + overnight',
+ing:[{n:'Rolled oats',a:'½ cup',cal:153,pro:5.4,carb:27.4,fat:2.7},{n:'Almond milk',a:'¾ cup',cal:39,pro:1.5,carb:1.5,fat:3},{n:'Chia seeds',a:'1 tbsp',cal:58,pro:2,carb:5,fat:3.7},{n:'Almond butter',a:'1 tbsp',cal:98,pro:3.4,carb:3,fat:9},{n:'Mixed berries',a:'½ cup',cal:35,pro:0.5,carb:9,fat:0.2}],
+steps:['Combine oats, chia, almond milk and maple syrup in a jar.','Stir well, seal and refrigerate overnight.','Stir in morning; add splash more milk if needed.','Top with berries and almond butter.']},
+
+{id:86,name:'Buddha Bowl',emoji:'🥗',ingCat:'avocado',dishCat:'bowl',tag:'Fusion',diff:'easy',cal:467,pro:20,carb:56,fat:19,time:'20 min',
+ing:[{n:'Quinoa',a:'1 cup cooked',cal:222,pro:8,carb:39,fat:3.5},{n:'Kale',a:'2 cups',cal:33,pro:2.9,carb:6.7,fat:0.5},{n:'Sweet potato',a:'1',cal:103,pro:2.3,carb:24,fat:0.2},{n:'Avocado',a:'½',cal:117,pro:1.5,carb:6,fat:10.5},{n:'Sesame dressing',a:'3 tbsp',cal:90,pro:2,carb:3,fat:8}],
+steps:['Massage kale with lemon and oil. Roast sweet potato.','Arrange quinoa as base in bowl.','Add all components in separate sections.','Drizzle sesame dressing; top with seeds.']},
+
+{id:87,name:'Dark Chocolate Bark',emoji:'🍫',ingCat:'banana',dishCat:'dessert',tag:'Sweet',diff:'easy',cal:218,pro:3,carb:22,fat:14,time:'15 min + set',
+ing:[{n:'Dark chocolate (70%+)',a:'200g',cal:1100,pro:14,carb:120,fat:72},{n:'Mixed nuts',a:'¼ cup',cal:196,pro:5,carb:8,fat:18},{n:'Dried cranberries',a:'3 tbsp',cal:93,pro:0.3,carb:24,fat:0.4},{n:'Pumpkin seeds',a:'2 tbsp',cal:84,pro:4.7,carb:3,fat:7},{n:'Flaky salt',a:'pinch',cal:0,pro:0,carb:0,fat:0}],
+steps:['Melt chocolate in double boiler.','Pour onto parchment lined sheet; spread thin.','Scatter nuts, cranberries and seeds.','Sprinkle salt; refrigerate 1 hour until set.']},
+
+{id:88,name:'Mango Sorbet',emoji:'🥭',ingCat:'banana',dishCat:'dessert',tag:'Tropical',diff:'easy',cal:130,pro:1,carb:32,fat:0.5,time:'5 min + freeze',
+ing:[{n:'Frozen mango',a:'3 cups',cal:321,pro:4.4,carb:81,fat:2.1},{n:'Lime juice',a:'2 tbsp',cal:8,pro:0.1,carb:2.8,fat:0},{n:'Agave syrup',a:'1 tbsp',cal:64,pro:0,carb:17,fat:0},{n:'Water',a:'2 tbsp',cal:0,pro:0,carb:0,fat:0},{n:'Fresh mint',a:'garnish',cal:1,pro:0.1,carb:0.2,fat:0}],
+steps:['Blend frozen mango with lime and agave.','Add water a splash at a time until smooth.','Serve immediately as slush or freeze 2 hours for scoopable sorbet.','Garnish with lime zest and mint.']},
+
+{id:89,name:'Minestrone',emoji:'🫕',ingCat:'tomato',dishCat:'soup',tag:'Italian',diff:'medium',cal:245,pro:12,carb:40,fat:5,time:'45 min',
+ing:[{n:'Cannellini beans',a:'1 can',cal:360,pro:22,carb:66,fat:1},{n:'Zucchini',a:'2',cal:66,pro:4.8,carb:14,fat:1.2},{n:'Diced tomatoes',a:'1 can',cal:40,pro:2,carb:8,fat:0.5},{n:'Small pasta',a:'1 cup',cal:350,pro:12,carb:70,fat:2},{n:'Vegetable broth',a:'6 cups',cal:48,pro:2.4,carb:9.6,fat:0}],
+steps:['Sauté onion, carrot and celery 8 min.','Add tomatoes, broth and beans; simmer 15 min.','Add zucchini and pasta; cook 12 min.','Season with salt, pepper and nutritional yeast.']},
+
+{id:90,name:'Pho (vegan)',emoji:'🍜',ingCat:'mushroom',dishCat:'noodle',tag:'Vietnamese',diff:'medium',cal:340,pro:12,carb:56,fat:7,time:'60 min',
+ing:[{n:'Rice noodles',a:'200g',cal:193,pro:3.4,carb:43,fat:0.4},{n:'Mushroom broth',a:'6 cups',cal:40,pro:2,carb:8,fat:0},{n:'Star anise & cinnamon',a:'2 each',cal:10,pro:0.3,carb:2.5,fat:0.3},{n:'Bean sprouts',a:'1 cup',cal:31,pro:3.2,carb:6,fat:0.2},{n:'Fresh herbs & lime',a:'as desired',cal:10,pro:0.5,carb:2,fat:0}],
+steps:['Simmer broth with star anise, cinnamon, ginger and charred onion 30 min.','Strain broth; season with soy and hoisin.','Cook rice noodles per package.','Bowl up with noodles, hot broth, sprouts, herbs and lime.']},
+
+{id:91,name:'Black Bean Tacos',emoji:'🌮',ingCat:'lentil',dishCat:'taco',tag:'Mexican',diff:'easy',cal:358,pro:14,carb:52,fat:11,time:'15 min',
+ing:[{n:'Black beans',a:'1 can',cal:340,pro:22,carb:60,fat:1.4},{n:'Corn tortillas',a:'4',cal:200,pro:4,carb:44,fat:2},{n:'Avocado',a:'1',cal:234,pro:3,carb:12,fat:21},{n:'Chipotle powder',a:'1 tsp',cal:7,pro:0.3,carb:1.4,fat:0.4},{n:'Fresh cilantro',a:'¼ cup',cal:1,pro:0.1,carb:0.3,fat:0}],
+steps:['Season black beans with chipotle, cumin and garlic; heat 5 min.','Warm tortillas on a dry skillet.','Mash avocado with lime and salt.','Build tacos with beans, avocado, lime slaw and cilantro.']},
+
+{id:92,name:'Jackfruit BBQ Sandwich',emoji:'🌯',ingCat:'avocado',dishCat:'sandwich',tag:'American BBQ',diff:'medium',cal:380,pro:6,carb:68,fat:9,time:'30 min',
+ing:[{n:'Young jackfruit (canned)',a:'2 cans',cal:200,pro:4,carb:48,fat:1},{n:'BBQ sauce (vegan)',a:'½ cup',cal:100,pro:0.5,carb:25,fat:0.5},{n:'Burger buns',a:'2',cal:280,pro:8,carb:52,fat:4},{n:'Coleslaw',a:'1 cup',cal:60,pro:2.5,carb:10,fat:1.5},{n:'Smoked paprika',a:'2 tsp',cal:11,pro:0.5,carb:2.1,fat:0.5}],
+steps:['Shred jackfruit with forks; season with paprika.','Sauté until browned then simmer in BBQ sauce 15 min.','Mix coleslaw with vegan mayo and apple cider vinegar.','Load onto toasted buns with slaw.']},
+];
+
+const INGR_CATS=[
+  {id:'eggplant',label:'Eggplant',emoji:'🍆'},
+  {id:'chickpea',label:'Chickpea',emoji:'🫘'},
+  {id:'lentil',label:'Lentils & Beans',emoji:'🫘'},
+  {id:'tofu',label:'Tofu',emoji:'⬜'},
+  {id:'avocado',label:'Avocado',emoji:'🥑'},
+  {id:'mushroom',label:'Mushroom',emoji:'🍄'},
+  {id:'spinach',label:'Spinach',emoji:'🌿'},
+  {id:'potato',label:'Potato',emoji:'🥔'},
+  {id:'banana',label:'Banana & Fruit',emoji:'🍌'},
+  {id:'tomato',label:'Tomato',emoji:'🍅'},
+  {id:'zucchini',label:'Zucchini',emoji:'🥒'},
+  {id:'cauliflower',label:'Cauliflower',emoji:'🥦'},
+];
+
+const DISH_CATS=[
+  {id:'curry',label:'Curries'},
+  {id:'soup',label:'Soups'},
+  {id:'salad',label:'Salads'},
+  {id:'bowl',label:'Bowls'},
+  {id:'pasta',label:'Pasta'},
+  {id:'stir_fry',label:'Stir-Fry'},
+  {id:'taco',label:'Tacos'},
+  {id:'breakfast',label:'Breakfast'},
+  {id:'dessert',label:'Desserts'},
+  {id:'smoothie',label:'Smoothies'},
+  {id:'snack',label:'Snacks'},
+  {id:'burger',label:'Burgers'},
+  {id:'sandwich',label:'Sandwiches'},
+  {id:'baked',label:'Baked'},
+  {id:'noodle',label:'Noodles & Ramen'},
+  {id:'dip',label:'Dips & Spreads'},
+  {id:'stew',label:'Stews'},
+  {id:'roasted',label:'Roasted'},
+  {id:'rice',label:'Rice Dishes'},
+  {id:'wrap',label:'Wraps & Gyros'},
+];
+
+let mode='ingr';
+let activeIngr='eggplant';
+let activeDish='curry';
+let searchTerm='';
+
+function buildTabs(){
+  const mt=document.getElementById('mainTabs');
+  const ingrBtn=`<div class="tab ${mode==='ingr'?'active':''}" onclick="setMode('ingr')">By ingredient</div>`;
+  const dishBtn=`<div class="tab ${mode==='dish'?'active':''}" onclick="setMode('dish')">By dish type</div>`;
+  const searchBtn=`<div class="tab ${mode==='search'?'active':''}" onclick="setMode('search')">Search results</div>`;
+  mt.innerHTML=ingrBtn+dishBtn+(searchTerm?searchBtn:'');
+}
+
+function buildSubTabs(){
+  const st=document.getElementById('subTabs');
+  if(mode==='ingr'){
+    st.innerHTML=INGR_CATS.map(c=>`<div class="stab ${activeIngr===c.id?'active':''}" onclick="setIngr('${c.id}',this)">${c.emoji} ${c.label}</div>`).join('');
+  } else if(mode==='dish'){
+    st.innerHTML=DISH_CATS.map(c=>`<div class="stab ${activeDish===c.id?'active':''}" onclick="setDish('${c.id}',this)">${c.label}</div>`).join('');
+  } else {
+    st.innerHTML='';
+  }
+}
+
+function getRecipes(){
+  if(mode==='search'){
+    const q=searchTerm.toLowerCase();
+    return RECIPES.filter(r=>
+      r.name.toLowerCase().includes(q)||
+      r.tag.toLowerCase().includes(q)||
+      r.ingCat.includes(q)||
+      r.dishCat.includes(q)||
+      r.ing.some(i=>i.n.toLowerCase().includes(q))
+    );
+  }
+  if(mode==='ingr') return RECIPES.filter(r=>r.ingCat===activeIngr);
+  if(mode==='dish') return RECIPES.filter(r=>r.dishCat===activeDish);
+  return RECIPES;
+}
+
+function renderAll(){
+  buildTabs(); buildSubTabs(); renderGrid2();
+}
+
+function renderGrid2(){
+  const list=getRecipes();
+  const g=document.getElementById('grid');
+  const em=document.getElementById('empty');
+  const rb=document.getElementById('rbar');
+  let label='';
+  if(mode==='ingr'){const c=INGR_CATS.find(x=>x.id===activeIngr);label=c?`${c.emoji} ${c.label} dishes`:''}
+  if(mode==='dish'){const c=DISH_CATS.find(x=>x.id===activeDish);label=c?c.label:''}
+  if(mode==='search') label=`results for "<strong>${searchTerm}</strong>"`;
+  rb.innerHTML=`<strong>${list.length}</strong> recipe${list.length!==1?'s':''} ${label?'— '+label:''}`;
+  if(!list.length){g.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  const bg2={eggplant:'#f3e8ff',tomato:'#fff1f2',mushroom:'#fdf4ff',chickpea:'#fef9c3',lentil:'#fce7f3',avocado:'#f0fdf4',tofu:'#fdf2f8',spinach:'#dcfce7',potato:'#fffbeb',banana:'#fef9c3',zucchini:'#f0fdf4',cauliflower:'#fdf4ff'};
+  g.innerHTML=list.map(r=>`
+    <div class="rcard" onclick="openD(${r.id})">
+      <div class="rcard-img" style="background:${bg2[r.ingCat]||'#fdf2f8'}"><span style="font-size:3rem">${r.emoji}</span></div>
+      <div class="rcard-body">
+        <div class="rcard-name">${r.name}</div>
+        <div class="rcard-sub">${r.tag} · ${r.time}</div>
+        <div class="macros">
+          <span class="mc k">${r.cal} kcal</span>
+          <span class="mc p">${r.pro}g protein</span>
+          <span class="mc c">${r.carb}g carbs</span>
+          <span class="mc f">${r.fat}g fat</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setMode(m){
+  if(m!=='search') searchTerm='';
+  mode=m; renderAll();
+}
+function setIngr(id){mode='ingr';activeIngr=id;renderAll();}
+function setDish(id){mode='dish';activeDish=id;renderAll();}
+
+function doSearch(){
+  const q=document.getElementById('srch').value.trim();
+  if(!q) return;
+  searchTerm=q; mode='search'; renderAll();
+}
+document.getElementById('srch').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+
+function openD(id){
+  const r=RECIPES.find(x=>x.id===id); if(!r) return;
+  document.getElementById('listView').style.display='none';
+  document.getElementById('mainTabs').parentElement.style.display='none';
+  document.getElementById('subTabs').style.display='none';
+  document.getElementById('rbar').style.display='none';
+  const dv=document.getElementById('dview'); dv.classList.add('open');
+  const rows=r.ing.map(i=>`<tr><td>${i.n}</td><td style="color:var(--muted)">${i.a}</td><td style="text-align:right">${i.cal}</td><td style="text-align:right">${i.pro}g</td><td style="text-align:right">${i.carb}g</td><td style="text-align:right">${i.fat}g</td></tr>`).join('');
+  const steps=r.steps.map((s,i)=>`<li><div class="snum">${i+1}</div><span>${s}</span></li>`).join('');
+  document.getElementById('dcard').innerHTML=`
+    <div class="dhero"><div class="dem">${r.emoji}</div><h2>${r.name}</h2><span class="dtag">${r.tag} · ${r.time} · ${r.diff}</span></div>
+    <div class="mbar">
+      <div class="mcell"><div class="v">${r.cal}</div><div class="l">Calories</div></div>
+      <div class="mcell"><div class="v">${r.pro}g</div><div class="l">Protein</div></div>
+      <div class="mcell"><div class="v">${r.carb}g</div><div class="l">Carbs</div></div>
+      <div class="mcell"><div class="v">${r.fat}g</div><div class="l">Fat</div></div>
+    </div>
+    <div class="dbody">
+      <div class="stitle">Ingredients & nutrition per ingredient</div>
+      <div style="overflow-x:auto"><table class="itable"><thead><tr><th>Ingredient</th><th>Amount</th><th style="text-align:right">Cal</th><th style="text-align:right">Protein</th><th style="text-align:right">Carbs</th><th style="text-align:right">Fat</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="stitle" style="margin-top:1rem">Instructions</div>
+      <ul class="slist">${steps}</ul>
+    </div>`;
+  dv.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function closeD(){
+  document.getElementById('dview').classList.remove('open');
+  document.getElementById('listView').style.display='';
+  document.getElementById('mainTabs').parentElement.style.display='';
+  document.getElementById('subTabs').style.display='';
+  document.getElementById('rbar').style.display='';
+}
+
+renderAll();
+</script>
